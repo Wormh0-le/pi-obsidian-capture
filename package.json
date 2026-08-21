@@ -1,0 +1,59 @@
+{
+  "name": "pi-obsidian-capture",
+  "version": "0.1.0",
+  "description": "Capture finalized Pi conversations to Obsidian and expose bounded, repository-scoped cross-vault knowledge retrieval.",
+  "type": "module",
+  "license": "MIT",
+  "author": "Wormh0-le",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Wormh0-le/pi-obsidian-capture.git"
+  },
+  "bugs": {
+    "url": "https://github.com/Wormh0-le/pi-obsidian-capture/issues"
+  },
+  "homepage": "https://github.com/Wormh0-le/pi-obsidian-capture#readme",
+  "keywords": [
+    "pi-package",
+    "pi-extension",
+    "obsidian",
+    "knowledge-management",
+    "conversation-capture"
+  ],
+  "files": [
+    "extensions",
+    "examples",
+    "README.md",
+    "KNOWLEDGE_CONTEXT.md",
+    "LICENSE",
+    "SECURITY.md",
+    "CHANGELOG.md"
+  ],
+  "pi": {
+    "extensions": [
+      "./extensions/obsidian-capture/index.ts"
+    ]
+  },
+  "peerDependencies": {
+    "@earendil-works/pi-ai": "*",
+    "@earendil-works/pi-coding-agent": "*",
+    "@earendil-works/pi-tui": "*",
+    "typebox": "*"
+  },
+  "devDependencies": {
+    "@earendil-works/pi-ai": "0.84.2",
+    "@earendil-works/pi-coding-agent": "0.84.2",
+    "@earendil-works/pi-tui": "0.84.2",
+    "@types/node": "^24.0.0",
+    "typebox": "1.3.7",
+    "typescript": "5.9.3"
+  },
+  "engines": {
+    "node": ">=24"
+  },
+  "scripts": {
+    "check": "tsc --noEmit && node scripts/check-package.mjs",
+    "test": "node --experimental-strip-types tests/router-smoke.mjs",
+    "prepack": "npm run check && npm test"
+  }
+}

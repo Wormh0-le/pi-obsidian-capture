@@ -1,0 +1,17 @@
+{
+  "schemaVersion": 1,
+  "vault": "/absolute/path/to/engineering_vault",
+  "inboxFolder": "00 Inbox/Pi Sessions",
+  "projectsFolder": "10 Projects",
+  "autoCapture": true,
+  "maxMessageChars": 80000,
+  "distillMaxChars": 160000,
+  "projects": {
+    "/absolute/path/to/a/repository": {
+      "name": "Example Project",
+      "folder": "10 Projects/Example Project",
+      "tags": ["example-project"],
+      "moc": "10 Projects/Example Project/Example Project MOC.md"
+    }
+  }
+}

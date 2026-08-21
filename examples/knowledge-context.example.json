@@ -1,0 +1,30 @@
+{
+  "schemaVersion": 1,
+  "project": "Example Project",
+  "engineering": {
+    "folder": "10 Projects/Example Project"
+  },
+  "sources": [
+    {
+      "id": "method-paper",
+      "vault": "papers",
+      "path": "Domain/Method Paper.md",
+      "relation": "reproduces",
+      "access": "sections",
+      "sections": ["Method", "Implementation Notes"]
+    },
+    {
+      "id": "domain-index",
+      "vault": "papers",
+      "path": "Domain",
+      "relation": "background",
+      "access": "index"
+    }
+  ],
+  "budget": {
+    "startupChars": 1200,
+    "maxSearchResults": 5,
+    "maxReadChars": 12000,
+    "maxFilesPerSource": 500
+  }
+}

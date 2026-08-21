@@ -1,0 +1,14 @@
+{
+  "schemaVersion": 1,
+  "vaults": {
+    "papers": "/absolute/path/to/knowledge_base",
+    "engineering": "/absolute/path/to/engineering_vault"
+  },
+  "defaults": {
+    "startupChars": 1200,
+    "maxSearchResults": 5,
+    "maxReadChars": 12000,
+    "maxFilesPerSource": 500,
+    "broadObsidianTools": false
+  }
+}
