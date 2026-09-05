@@ -9,7 +9,7 @@ import type { AutocompleteItem } from "@earendil-works/pi-tui";
 
 import { captureUnseenExchanges } from "./capture.ts";
 import { buildConversationExchanges, exchangeMarker } from "./conversation.ts";
-import { resolveCaptureContext } from "./config.ts";
+import { CaptureNotConfiguredError, resolveCaptureContext } from "./config.ts";
 import { distillConversation } from "./distill.ts";
 import { registerKnowledgeFeatures } from "./knowledge-extension.ts";
 import { needsSetup, setupObsidian } from "./setup.ts";
@@ -61,6 +61,17 @@ export default function obsidianCaptureExtension(pi: ExtensionAPI) {
 
 	const isAutoEnabled = (resolved: ResolvedCaptureContext): boolean => autoOverride ?? resolved.autoCapture;
 
+	const resolveAutomaticContext = async (ctx: ExtensionContext): Promise<ResolvedCaptureContext | undefined> => {
+		try {
+			return await resolveContext(ctx);
+		} catch (error) {
+			if (!(error instanceof CaptureNotConfiguredError)) throw error;
+			ctx.ui.setStatus(STATUS_KEY, undefined);
+			lastAutomaticError = undefined;
+			return undefined;
+		}
+	};
+
 	const updateStatus = (ctx: ExtensionContext, resolved: ResolvedCaptureContext): void => {
 		const mode = isAutoEnabled(resolved) ? "auto" : "manual";
 		ctx.ui.setStatus(STATUS_KEY, `📝 ${resolved.projectSlug} · ${mode}`);
@@ -94,12 +105,8 @@ export default function obsidianCaptureExtension(pi: ExtensionAPI) {
 			if (typeof data?.autoEnabled === "boolean") autoOverride = data.autoEnabled;
 		}
 		try {
-			if (await needsSetup()) {
-				ctx.ui.setStatus(STATUS_KEY, "📝 run /obsidian-setup");
-				ctx.ui.notify("Run /obsidian-setup to configure your vaults without copying JSON files.", "info");
-				return;
-			}
-			updateStatus(ctx, await resolveContext(ctx));
+			const resolved = await resolveAutomaticContext(ctx);
+			if (resolved) updateStatus(ctx, resolved);
 		} catch (error) {
 			ctx.ui.setStatus(STATUS_KEY, "📝 config error");
 			ctx.ui.notify((error as Error).message, "error");
@@ -108,7 +115,8 @@ export default function obsidianCaptureExtension(pi: ExtensionAPI) {
 
 	pi.on("agent_settled", async (_event, ctx) => {
 		try {
-			const resolved = await resolveContext(ctx);
+			const resolved = await resolveAutomaticContext(ctx);
+			if (!resolved) return;
 			updateStatus(ctx, resolved);
 			if (!isAutoEnabled(resolved)) return;
 			await captureCurrent(ctx, false);
@@ -124,8 +132,8 @@ export default function obsidianCaptureExtension(pi: ExtensionAPI) {
 
 	pi.on("session_shutdown", async (_event, ctx) => {
 		try {
-			const resolved = await resolveContext(ctx);
-			if (isAutoEnabled(resolved)) await captureCurrent(ctx, false);
+			const resolved = await resolveAutomaticContext(ctx);
+			if (resolved && isAutoEnabled(resolved)) await captureCurrent(ctx, false);
 		} catch {
 			// Shutdown is a best-effort fallback; agent_settled reports actionable errors.
 		}

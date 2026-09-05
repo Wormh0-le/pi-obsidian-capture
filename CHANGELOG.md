@@ -2,6 +2,10 @@
 
 All notable changes to this project will be documented here.
 
+## 0.1.2 - 2026-09-05
+
+- Keep unconfigured capture silent on session start, resume, and automatic capture events; show setup guidance only for explicit commands.
+
 ## 0.1.1 - 2026-09-05
 
 - Add `/obsidian-setup` to create missing global configuration files from interactive vault path prompts without overwriting existing settings.

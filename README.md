@@ -12,13 +12,13 @@ Raw capture never stores thinking, tool calls, tool results, or terminal logs. C
 Install the npm package globally:
 
 ```bash
-pi install npm:pi-obsidian-capture@0.1.1
+pi install npm:pi-obsidian-capture@0.1.2
 ```
 
 To test without installing:
 
 ```bash
-pi -e npm:pi-obsidian-capture@0.1.1
+pi -e npm:pi-obsidian-capture@0.1.2
 ```
 
 Pi packages execute with the user's full system permissions. Review the source and [security model](SECURITY.md) before installation.
@@ -26,6 +26,8 @@ Pi packages execute with the user's full system permissions. Review the source a
 Tested with Pi `0.84.2` and Node.js 24.
 
 ## First-run setup
+
+Setup is optional. Until capture is configured, new and resumed sessions stay silent and automatic capture is skipped. Run `/obsidian-setup` when you want to enable it; explicit capture commands explain how to configure it if needed.
 
 After installation, start Pi (or run `/reload` in an existing session), then run:
 
@@ -120,10 +122,10 @@ Scoped capture and `project_knowledge` work without `pi-obsidian`.
 安装：
 
 ```bash
-pi install npm:pi-obsidian-capture@0.1.1
+pi install npm:pi-obsidian-capture@0.1.2
 ```
 
-安装后启动 Pi（已打开的会话先执行 `/reload`），运行 `/obsidian-setup`，输入工程 Vault 路径和可选的资料 Vault 路径即可，无需手动复制 JSON。工程 Vault 默认开启自动采集。已有配置不会被覆盖，取消输入不会写入文件。
+配置是可选的：未配置采集时，新建或恢复会话不会提示配置，回答结束也不会自动采集或报未配置错误。需要使用时，启动 Pi（已打开的会话先执行 `/reload`），运行 `/obsidian-setup`，输入工程 Vault 路径和可选的资料 Vault 路径即可，无需手动复制 JSON。工程 Vault 默认开启自动采集，可通过 `/note-auto off` 关闭当前会话的自动采集。已有配置不会被覆盖，取消输入不会写入文件。
 
 引导自动创建以下个人配置：
 

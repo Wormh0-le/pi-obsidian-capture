@@ -141,6 +141,13 @@ function boundedPositiveInt(value: unknown, fallback: number, minimum: number, m
 	return Math.min(maximum, Math.max(minimum, Math.floor(value)));
 }
 
+export class CaptureNotConfiguredError extends Error {
+	constructor(configPath: string) {
+		super(`Capture is not configured. Run /obsidian-setup to create ${configPath}`);
+		this.name = "CaptureNotConfiguredError";
+	}
+}
+
 export async function resolveCaptureContext(
 	cwd: string,
 	sessionId: string,
@@ -148,7 +155,7 @@ export async function resolveCaptureContext(
 ): Promise<ResolvedCaptureContext> {
 	const configPath = captureGlobalConfigPath();
 	const config = await readJsonFile<CaptureConfig>(configPath, false);
-	if (!config) throw new Error(`Capture is not configured. Run /obsidian-setup to create ${configPath}`);
+	if (config === undefined) throw new CaptureNotConfiguredError(configPath);
 	if (!config?.vault) throw new Error(`Missing required \"vault\" in ${configPath}`);
 
 	const configuredVault = resolve(expandHome(config.vault));
