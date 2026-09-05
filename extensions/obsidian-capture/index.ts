@@ -12,6 +12,7 @@ import { buildConversationExchanges, exchangeMarker } from "./conversation.ts";
 import { resolveCaptureContext } from "./config.ts";
 import { distillConversation } from "./distill.ts";
 import { registerKnowledgeFeatures } from "./knowledge-extension.ts";
+import { needsSetup, setupObsidian } from "./setup.ts";
 import type {
 	ExtensionSessionState,
 	MessageEntry,
@@ -93,6 +94,11 @@ export default function obsidianCaptureExtension(pi: ExtensionAPI) {
 			if (typeof data?.autoEnabled === "boolean") autoOverride = data.autoEnabled;
 		}
 		try {
+			if (await needsSetup()) {
+				ctx.ui.setStatus(STATUS_KEY, "📝 run /obsidian-setup");
+				ctx.ui.notify("Run /obsidian-setup to configure your vaults without copying JSON files.", "info");
+				return;
+			}
 			updateStatus(ctx, await resolveContext(ctx));
 		} catch (error) {
 			ctx.ui.setStatus(STATUS_KEY, "📝 config error");
@@ -123,6 +129,18 @@ export default function obsidianCaptureExtension(pi: ExtensionAPI) {
 		} catch {
 			// Shutdown is a best-effort fallback; agent_settled reports actionable errors.
 		}
+	});
+
+	pi.registerCommand("obsidian-setup", {
+		description: "Configure vault paths and create missing global Obsidian configuration files",
+		handler: async (_args, ctx) => {
+			try {
+				ctx.ui.notify(await setupObsidian(ctx), "info");
+				if (!(await needsSetup())) updateStatus(ctx, await resolveContext(ctx));
+			} catch (error) {
+				ctx.ui.notify(`Obsidian setup failed: ${(error as Error).message}`, "error");
+			}
+		},
 	});
 
 	pi.registerCommand("note-status", {

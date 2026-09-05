@@ -154,12 +154,12 @@ async function resolveSource(
 	};
 }
 
-function knowledgeGlobalConfigPath(): string {
+export function knowledgeGlobalConfigPath(): string {
 	return resolve(expandHome(process.env.PI_KNOWLEDGE_VAULTS_CONFIG ?? DEFAULT_CONFIG_PATH));
 }
 
 export async function loadBroadObsidianToolsDefault(): Promise<boolean> {
-	const config = await readJson<KnowledgeVaultConfig>(knowledgeGlobalConfigPath(), true);
+	const config = await readJson<KnowledgeVaultConfig>(knowledgeGlobalConfigPath(), false);
 	return config?.defaults?.broadObsidianTools ?? false;
 }
 

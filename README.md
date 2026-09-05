@@ -9,43 +9,48 @@ Raw capture never stores thinking, tool calls, tool results, or terminal logs. C
 
 ## Install
 
-Install the tagged Git package globally:
+Install the npm package globally:
 
 ```bash
-pi install git:github.com/Wormh0-le/pi-obsidian-capture@v0.1.0
+pi install npm:pi-obsidian-capture@0.1.1
 ```
 
 To test without installing:
 
 ```bash
-pi -e git:github.com/Wormh0-le/pi-obsidian-capture@v0.1.0
+pi -e npm:pi-obsidian-capture@0.1.1
 ```
 
 Pi packages execute with the user's full system permissions. Review the source and [security model](SECURITY.md) before installation.
 
 Tested with Pi `0.84.2` and Node.js 24.
 
-## Configure capture
+## First-run setup
 
-Copy [examples/obsidian-capture.example.json](examples/obsidian-capture.example.json) to:
+After installation, start Pi (or run `/reload` in an existing session), then run:
+
+```text
+/obsidian-setup
+```
+
+Enter the absolute path of your existing engineering vault (`~/` is supported), then optionally enter a papers vault path. Leave the papers input blank to skip it. The command creates both global configuration files with working defaults:
 
 ```text
 ~/.pi/agent/obsidian-capture.json
-```
-
-Set `vault` to the absolute path of the engineering vault. Machine-local absolute paths belong only in this global file and should not be committed.
-
-A repository can optionally provide `.pi/obsidian-capture.json` using [examples/project-obsidian-capture.example.json](examples/project-obsidian-capture.example.json). Project configuration may change project metadata and capture behavior, but cannot override the vault path.
-
-## Configure scoped cross-vault knowledge
-
-Copy [examples/knowledge-vaults.example.json](examples/knowledge-vaults.example.json) to:
-
-```text
 ~/.pi/agent/knowledge-vaults.json
 ```
 
-This global file maps portable aliases such as `papers` and `engineering` to machine-local vault paths and establishes hard budgets.
+Automatic capture is enabled for the selected engineering vault. Existing files are preserved; rerunning setup creates only missing files. Cancelling either input leaves files unchanged. Setup requires an interactive Pi session and takes effect immediately for capture and subsequent knowledge commands. It does not create a vault or grant repository knowledge access.
+
+If `PI_OBSIDIAN_CAPTURE_CONFIG` or `PI_KNOWLEDGE_VAULTS_CONFIG` is set, setup uses the same overridden file path as the plugin.
+
+### Optional manual configuration
+
+Use [the capture example](examples/obsidian-capture.example.json) to customize capture folders, limits, or project routing, and [the vault mapping example](examples/knowledge-vaults.example.json) to add aliases or customize hard budgets. Machine-local paths belong only in these global files and should not be committed.
+
+A repository can optionally provide `.pi/obsidian-capture.json` using [the project example](examples/project-obsidian-capture.example.json). Project configuration may change project metadata and capture behavior, but cannot override the vault path.
+
+## Configure scoped cross-vault knowledge
 
 Inside a trusted repository, run:
 
@@ -73,6 +78,7 @@ Vault content returned by `project_knowledge` is explicitly marked as untrusted 
 
 | Command | Purpose |
 |---|---|
+| `/obsidian-setup` | Create missing global configuration files through interactive vault path prompts. |
 | `/note-status` | Show capture routing and current state. |
 | `/note` | Capture unseen finalized exchanges now. |
 | `/note-auto on\|off\|status` | Override automatic capture for the session. |
@@ -114,10 +120,12 @@ Scoped capture and `project_knowledge` work without `pi-obsidian`.
 安装：
 
 ```bash
-pi install git:github.com/Wormh0-le/pi-obsidian-capture@v0.1.0
+pi install npm:pi-obsidian-capture@0.1.1
 ```
 
-个人机器路径分别放在：
+安装后启动 Pi（已打开的会话先执行 `/reload`），运行 `/obsidian-setup`，输入工程 Vault 路径和可选的资料 Vault 路径即可，无需手动复制 JSON。工程 Vault 默认开启自动采集。已有配置不会被覆盖，取消输入不会写入文件。
+
+引导自动创建以下个人配置：
 
 ```text
 ~/.pi/agent/obsidian-capture.json

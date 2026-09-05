@@ -15,6 +15,10 @@ const DEFAULT_PROJECTS_FOLDER = "10 Projects";
 const DEFAULT_MAX_MESSAGE_CHARS = 80_000;
 const DEFAULT_DISTILL_MAX_CHARS = 160_000;
 
+export function captureGlobalConfigPath(): string {
+	return resolve(expandHome(process.env.PI_OBSIDIAN_CAPTURE_CONFIG ?? DEFAULT_CONFIG_PATH));
+}
+
 export function expandHome(value: string): string {
 	if (value === "~") return homedir();
 	if (value.startsWith(`~${sep}`) || value.startsWith("~/")) {
@@ -142,8 +146,9 @@ export async function resolveCaptureContext(
 	sessionId: string,
 	allowProjectConfig: boolean,
 ): Promise<ResolvedCaptureContext> {
-	const configPath = resolve(expandHome(process.env.PI_OBSIDIAN_CAPTURE_CONFIG ?? DEFAULT_CONFIG_PATH));
-	const config = await readJsonFile<CaptureConfig>(configPath, true);
+	const configPath = captureGlobalConfigPath();
+	const config = await readJsonFile<CaptureConfig>(configPath, false);
+	if (!config) throw new Error(`Capture is not configured. Run /obsidian-setup to create ${configPath}`);
 	if (!config?.vault) throw new Error(`Missing required \"vault\" in ${configPath}`);
 
 	const configuredVault = resolve(expandHome(config.vault));

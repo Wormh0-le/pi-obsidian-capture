@@ -1,6 +1,6 @@
 {
   "name": "pi-obsidian-capture",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Capture finalized Pi conversations to Obsidian and expose bounded, repository-scoped cross-vault knowledge retrieval.",
   "type": "module",
   "license": "MIT",
@@ -53,7 +53,7 @@
   },
   "scripts": {
     "check": "tsc --noEmit && node scripts/check-package.mjs",
-    "test": "node --experimental-strip-types tests/router-smoke.mjs",
+    "test": "node --experimental-strip-types tests/router-smoke.mjs && node --experimental-strip-types tests/setup-smoke.mjs",
     "prepack": "npm run check && npm test"
   }
 }
